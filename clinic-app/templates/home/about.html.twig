@@ -1,0 +1,230 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .about-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                        url('https://images.pexels.com/photos/263402/pexels-photo-263402.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            margin-top: -1.5rem;
+            margin-bottom: 3rem;
+        }
+        .value-card {
+            transition: transform 0.3s ease;
+            height: 100%;
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        .value-icon {
+            font-size: 2.5rem;
+            color: #3498db;
+            margin-bottom: 1.5rem;
+        }
+        .team-member-card {
+            transition: transform 0.3s ease;
+        }
+        .team-member-card:hover {
+            transform: translateY(-5px);
+        }
+        .team-member-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+        .stats-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {# About Header #}
+    <section class="about-header text-center">
+        <div class="container">
+            <h1 class="display-4 mb-4">Notre Histoire</h1>
+            <p class="lead">Plus de 20 ans d'excellence médicale à votre service</p>
+        </div>
+    </section>
+
+    {# Main Content #}
+    <div class="container mb-5">
+        {# Mission Statement #}
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="h3 mb-4">Notre Mission</h2>
+                <p class="lead text-muted mb-4">
+                    Offrir des soins médicaux de qualité exceptionnelle dans un environnement accueillant et professionnel, 
+                    en plaçant toujours le patient au cœur de nos préoccupations.
+                </p>
+            </div>
+        </div>
+
+        {# Core Values #}
+        <h2 class="h3 text-center mb-4">Nos Valeurs</h2>
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card value-card">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-heart value-icon"></i>
+                        <h3 class="h5 mb-3">Excellence</h3>
+                        <p class="text-muted mb-0">
+                            Nous nous engageons à fournir les meilleurs soins possibles à chaque patient.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card value-card">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-hands-helping value-icon"></i>
+                        <h3 class="h5 mb-3">Compassion</h3>
+                        <p class="text-muted mb-0">
+                            Nous traitons chaque patient avec empathie, dignité et respect.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card value-card">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-shield-alt value-icon"></i>
+                        <h3 class="h5 mb-3">Intégrité</h3>
+                        <p class="text-muted mb-0">
+                            Nous maintenons les plus hauts standards d'éthique professionnelle.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Statistics Section #}
+        <section class="stats-section text-center my-5">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="stat-number">20+</div>
+                        <p class="text-muted mb-0">Années d'expérience</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-number">50k+</div>
+                        <p class="text-muted mb-0">Patients satisfaits</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-number">30+</div>
+                        <p class="text-muted mb-0">Médecins spécialistes</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-number">15+</div>
+                        <p class="text-muted mb-0">Spécialités médicales</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# Team Section #}
+        <section class="mb-5">
+            <h2 class="h3 text-center mb-4">Notre Équipe de Direction</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card team-member-card text-center">
+                        <div class="card-body">
+                            <img src="https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                                 alt="Dr. Martin" class="team-member-img">
+                            <h3 class="h5">Dr. Sophie Martin</h3>
+                            <p class="text-muted">Directrice Médicale</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card team-member-card text-center">
+                        <div class="card-body">
+                            <img src="https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                                 alt="Dr. Dubois" class="team-member-img">
+                            <h3 class="h5">Dr. Pierre Dubois</h3>
+                            <p class="text-muted">Chef du Service Chirurgie</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card team-member-card text-center">
+                        <div class="card-body">
+                            <img src="https://images.pexels.com/photos/5214958/pexels-photo-5214958.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                                 alt="Mme Bernard" class="team-member-img">
+                            <h3 class="h5">Mme. Claire Bernard</h3>
+                            <p class="text-muted">Directrice Administrative</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# Certifications Section #}
+        <section class="mb-5">
+            <h2 class="h3 text-center mb-4">Nos Accréditations</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-certificate mb-3" style="font-size: 2rem; color: #3498db;"></i>
+                            <h4 class="h6">ISO 9001:2015</h4>
+                            <p class="small text-muted mb-0">Certification Qualité</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-award mb-3" style="font-size: 2rem; color: #3498db;"></i>
+                            <h4 class="h6">HAS Niveau A</h4>
+                            <p class="small text-muted mb-0">Haute Autorité de Santé</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star mb-3" style="font-size: 2rem; color: #3498db;"></i>
+                            <h4 class="h6">Label Hospitalité</h4>
+                            <p class="small text-muted mb-0">Excellence du Service Patient</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {# CTA Section #}
+    <section class="bg-primary text-white py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Rejoignez notre établissement</h2>
+            <p class="lead mb-4">Découvrez nos opportunités de carrière et rejoignez une équipe passionnée</p>
+            <a href="#" class="btn btn-light btn-lg">
+                <i class="fas fa-briefcase me-2"></i>Voir nos offres d'emploi
+            </a>
+        </div>
+    </section>
+{% endblock %}
