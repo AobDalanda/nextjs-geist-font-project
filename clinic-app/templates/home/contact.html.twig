@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .contact-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                        url('https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            margin-top: -1.5rem;
+            margin-bottom: 3rem;
+        }
+        .contact-info-card {
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .contact-info-card:hover {
+            transform: translateY(-5px);
+        }
+        .contact-icon {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+        .map-container {
+            height: 400px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {# Contact Header #}
+    <section class="contact-header text-center">
+        <div class="container">
+            <h1 class="display-4 mb-4">Contactez-nous</h1>
+            <p class="lead">Notre équipe est à votre écoute pour répondre à vos questions</p>
+        </div>
+    </section>
+
+    <div class="container mb-5">
+        <div class="row g-4 mb-5">
+            {# Contact Information Cards #}
+            <div class="col-md-4">
+                <div class="card contact-info-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-map-marker-alt contact-icon"></i>
+                        <h3 class="h5 mb-3">Notre adresse</h3>
+                        <p class="mb-0">123 Rue de la Santé</p>
+                        <p class="mb-0">75000 Paris</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card contact-info-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-phone contact-icon"></i>
+                        <h3 class="h5 mb-3">Téléphone</h3>
+                        <p class="mb-0">01 23 45 67 89</p>
+                        <p class="mb-0">Lun - Ven: 8h - 20h</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card contact-info-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-envelope contact-icon"></i>
+                        <h3 class="h5 mb-3">Email</h3>
+                        <p class="mb-0">contact@clinique.fr</p>
+                        <p class="mb-0">Réponse sous 24h</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {# Contact Form #}
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-4">Envoyez-nous un message</h2>
+                        <form action="{{ path('app_contact_send') }}" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nom complet</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Sujet</label>
+                                <select class="form-select" id="subject" name="subject" required>
+                                    <option value="">Choisir un sujet</option>
+                                    <option value="rdv">Prise de rendez-vous</option>
+                                    <option value="info">Demande d'information</option>
+                                    <option value="urgence">Urgence</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Envoyer le message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {# Map #}
+            <div class="col-lg-6">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2625.476042697461!2d2.341075815674139!3d48.85295097928678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e671e1a95a8d3f%3A0x6eb5f96a8d8653cb!2sNotre-Dame%20de%20Paris!5e0!3m2!1sfr!2sfr!4v1625764428406!5m2!1sfr!2sfr"
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h3 class="h5 mb-3">Horaires d'ouverture</h3>
+                        <ul class="list-unstyled mb-0">
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Lundi - Vendredi</span>
+                                <span>8h - 20h</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Samedi</span>
+                                <span>9h - 18h</span>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span>Dimanche</span>
+                                <span class="text-danger">Fermé</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Emergency Contact Section #}
+    <section class="bg-primary text-white py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Urgence médicale ?</h2>
+            <p class="lead mb-4">En cas d'urgence, contactez immédiatement le</p>
+            <h3 class="display-4 mb-4">15</h3>
+            <p class="mb-0">Pour toute urgence vitale, composez le 15 (SAMU) ou le 112 (numéro d'urgence européen)</p>
+        </div>
+    </section>
+{% endblock %}
