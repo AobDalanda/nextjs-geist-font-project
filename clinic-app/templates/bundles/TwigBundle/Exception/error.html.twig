@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur {{ status_code }} - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .error-section {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #e74c3c;
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .error-message {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+        .error-description {
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .error-image {
+            max-width: 300px;
+            margin-bottom: 2rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="error-section">
+    <div class="container">
+        <img src="https://illustrations.popsy.co/white/warning.svg" alt="Error {{ status_code }}" class="error-image">
+        
+        <div class="error-code">{{ status_code }}</div>
+        <h1 class="error-message">
+            {% if status_code == 403 %}
+                Accès refusé
+            {% elseif status_code == 500 %}
+                Erreur interne du serveur
+            {% elseif status_code == 503 %}
+                Service temporairement indisponible
+            {% else %}
+                Une erreur est survenue
+            {% endif %}
+        </h1>
+        
+        <p class="error-description">
+            {% if status_code == 403 %}
+                Désolé, vous n'avez pas les droits nécessaires pour accéder à cette page.
+                Veuillez vous connecter ou contacter l'administrateur si vous pensez qu'il s'agit d'une erreur.
+            {% elseif status_code == 500 %}
+                Nous rencontrons actuellement des difficultés techniques.
+                Notre équipe a été notifiée et travaille à résoudre le problème.
+            {% elseif status_code == 503 %}
+                Le service est temporairement indisponible pour cause de maintenance.
+                Veuillez réessayer dans quelques instants.
+            {% else %}
+                Une erreur inattendue s'est produite. Nous nous excusons pour la gêne occasionnée.
+                N'hésitez pas à nous contacter si le problème persiste.
+            {% endif %}
+        </p>
+
+        <div class="action-buttons">
+            <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-home me-2"></i>Retour à l'accueil
+            </a>
+            {% if status_code != 403 %}
+                <a href="{{ path('app_contact') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-envelope me-2"></i>Nous contacter
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                </a>
+            {% endif %}
+        </div>
+
+        {% if status_code == 500 %}
+            <div class="mt-5">
+                <div class="alert alert-info" role="alert">
+                    <h3 class="h5"><i class="fas fa-info-circle me-2"></i>Que faire ?</h3>
+                    <ul class="list-unstyled mb-0">
+                        <li>• Rafraîchissez la page</li>
+                        <li>• Videz le cache de votre navigateur</li>
+                        <li>• Réessayez dans quelques minutes</li>
+                        <li>• Contactez-nous si le problème persiste</li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if app.debug %}
+            <div class="mt-5">
+                <div class="alert alert-warning">
+                    <h3 class="h5 mb-3">Détails techniques (visible uniquement en mode debug)</h3>
+                    <p class="mb-0"><strong>Message :</strong> {{ exception.message }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
