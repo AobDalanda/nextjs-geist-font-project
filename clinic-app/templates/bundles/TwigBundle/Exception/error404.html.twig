@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page non trouvée - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .error-section {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #3498db;
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .error-message {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+        .error-description {
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .error-image {
+            max-width: 300px;
+            margin-bottom: 2rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="error-section">
+    <div class="container">
+        <img src="https://illustrations.popsy.co/white/falling.svg" alt="404 Error" class="error-image">
+        
+        <div class="error-code">404</div>
+        <h1 class="error-message">Page non trouvée</h1>
+        
+        <p class="error-description">
+            Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
+            Vous pouvez retourner à la page d'accueil ou consulter nos services.
+        </p>
+
+        <div class="action-buttons">
+            <a href="{{ path('app_home') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-home me-2"></i>Retour à l'accueil
+            </a>
+            <a href="{{ path('app_contact') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-envelope me-2"></i>Nous contacter
+            </a>
+        </div>
+
+        <div class="mt-5">
+            <h2 class="h4 mb-4">Vous cherchez peut-être ?</h2>
+            <div class="row justify-content-center g-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="h5 mb-3">Prendre rendez-vous</h3>
+                            <p class="text-muted mb-3">Consultez nos disponibilités et prenez rendez-vous en ligne.</p>
+                            <a href="{{ path('app_appointment_new') }}" class="btn btn-outline-primary btn-sm">
+                                Réserver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="h5 mb-3">Nos services</h3>
+                            <p class="text-muted mb-3">Découvrez l'ensemble de nos services médicaux.</p>
+                            <a href="{{ path('app_services') }}" class="btn btn-outline-primary btn-sm">
+                                En savoir plus
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
