@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .profile-header {
+            background-color: #f8f9fa;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-pills .nav-link {
+            color: #495057;
+            background-color: transparent;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.25rem;
+        }
+        .nav-pills .nav-link.active {
+            color: #fff;
+            background-color: #3498db;
+        }
+        .form-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {# Profile Header #}
+    <section class="profile-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-auto text-center mb-3 mb-md-0">
+                    <img src="https://ui-avatars.com/api/?name={{ user.firstName }}+{{ user.lastName }}&background=random" 
+                         alt="{{ user.fullName }}" class="profile-image">
+                </div>
+                <div class="col-md">
+                    <h1 class="h2 mb-1">{{ user.fullName }}</h1>
+                    <p class="text-muted mb-0">
+                        {% if is_granted('ROLE_DOCTOR') %}
+                            <i class="fas fa-user-md me-2"></i>{{ user.speciality }}
+                        {% else %}
+                            <i class="fas fa-user me-2"></i>Patient
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        {# Navigation Tabs #}
+        <ul class="nav nav-pills mb-4" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" 
+                        data-bs-target="#info" type="button" role="tab">
+                    <i class="fas fa-user-circle me-2"></i>Informations personnelles
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="security-tab" data-bs-toggle="tab" 
+                        data-bs-target="#security" type="button" role="tab">
+                    <i class="fas fa-shield-alt me-2"></i>Sécurité
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="preferences-tab" data-bs-toggle="tab" 
+                        data-bs-target="#preferences" type="button" role="tab">
+                    <i class="fas fa-cog me-2"></i>Préférences
+                </button>
+            </li>
+        </ul>
+
+        {# Tab Content #}
+        <div class="tab-content" id="profileTabsContent">
+            {# Personal Information Tab #}
+            <div class="tab-pane fade show active" id="info" role="tabpanel">
+                <div class="form-card">
+                    <h3 class="h4 mb-4">Informations personnelles</h3>
+                    {{ form_start(profileForm) }}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form_row(profileForm.firstName, {
+                                    'attr': {'class': 'form-control'}
+                                }) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(profileForm.lastName, {
+                                    'attr': {'class': 'form-control'}
+                                }) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(profileForm.email, {
+                                    'attr': {'class': 'form-control'}
+                                }) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(profileForm.phoneNumber, {
+                                    'attr': {'class': 'form-control'}
+                                }) }}
+                            </div>
+                            {% if is_granted('ROLE_DOCTOR') %}
+                                <div class="col-12">
+                                    {{ form_row(profileForm.speciality, {
+                                        'attr': {'class': 'form-control'}
+                                    }) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                            </button>
+                        </div>
+                    {{ form_end(profileForm) }}
+                </div>
+            </div>
+
+            {# Security Tab #}
+            <div class="tab-pane fade" id="security" role="tabpanel">
+                <div class="form-card">
+                    <h3 class="h4 mb-4">Sécurité</h3>
+                    {{ form_start(passwordForm) }}
+                        <div class="mb-3">
+                            {{ form_row(passwordForm.currentPassword, {
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(passwordForm.newPassword.first, {
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <div class="mb-4">
+                            {{ form_row(passwordForm.newPassword.second, {
+                                'attr': {'class': 'form-control'}
+                            }) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key me-2"></i>Changer le mot de passe
+                        </button>
+                    {{ form_end(passwordForm) }}
+                </div>
+            </div>
+
+            {# Preferences Tab #}
+            <div class="tab-pane fade" id="preferences" role="tabpanel">
+                <div class="form-card">
+                    <h3 class="h4 mb-4">Préférences</h3>
+                    {{ form_start(preferencesForm) }}
+                        <div class="mb-4">
+                            <label class="form-label">Mode de notification préféré</label>
+                            {{ form_widget(preferencesForm.preferredNotification, {
+                                'attr': {'class': 'form-check-input'},
+                                'label_attr': {'class': 'form-check-label'}
+                            }) }}
+                        </div>
+
+                        {% if is_granted('ROLE_DOCTOR') %}
+                            <div class="mb-4">
+                                <label class="form-label">Disponibilité</label>
+                                {{ form_widget(preferencesForm.isAvailable, {
+                                    'attr': {'class': 'form-check-input'},
+                                    'label_attr': {'class': 'form-check-label'}
+                                }) }}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Enregistrer les préférences
+                        </button>
+                    {{ form_end(preferencesForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Password strength indicator
+        document.addEventListener('DOMContentLoaded', function() {
+            const password = document.querySelector('#password_form_newPassword_first');
+            if (password) {
+                const strengthMeter = document.createElement('div');
+                strengthMeter.className = 'progress mt-2';
+                strengthMeter.style.height = '5px';
+                
+                const strengthBar = document.createElement('div');
+                strengthBar.className = 'progress-bar';
+                strengthBar.style.width = '0%';
+                strengthMeter.appendChild(strengthBar);
+
+                password.parentNode.appendChild(strengthMeter);
+
+                password.addEventListener('input', function() {
+                    const val = this.value;
+                    let strength = 0;
+                    
+                    if (val.match(/[a-z]/)) strength += 20;
+                    if (val.match(/[A-Z]/)) strength += 20;
+                    if (val.match(/[0-9]/)) strength += 20;
+                    if (val.match(/[^a-zA-Z0-9]/)) strength += 20;
+                    if (val.length >= 8) strength += 20;
+
+                    strengthBar.style.width = strength + '%';
+                    
+                    if (strength <= 40) {
+                        strengthBar.className = 'progress-bar bg-danger';
+                    } else if (strength <= 80) {
+                        strengthBar.className = 'progress-bar bg-warning';
+                    } else {
+                        strengthBar.className = 'progress-bar bg-success';
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
