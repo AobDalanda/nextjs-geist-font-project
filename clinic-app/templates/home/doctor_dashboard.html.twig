@@ -1,0 +1,287 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord Médecin - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .dashboard-header {
+            background-color: #f8f9fa;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+        .stats-card {
+            transition: transform 0.2s;
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .appointment-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .calendar-container {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .status-scheduled { background-color: #28a745; }
+        .status-completed { background-color: #17a2b8; }
+        .status-cancelled { background-color: #dc3545; }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {# Dashboard Header #}
+    <section class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="h2 mb-0">Dr. {{ user.fullName }}</h1>
+                    <p class="text-muted mb-0">{{ user.speciality }}</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                        <i class="fas fa-clock me-2"></i>Gérer mes disponibilités
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        {# Statistics Cards #}
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="stats-card card bg-primary text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Aujourd'hui</h5>
+                        <h2 class="mb-0">{{ todayAppointments|length }}</h2>
+                        <p class="mb-0">Rendez-vous</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card card bg-success text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Cette semaine</h5>
+                        <h2 class="mb-0">{{ weeklyAppointments|length }}</h2>
+                        <p class="mb-0">Rendez-vous</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card card bg-info text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Complétés</h5>
+                        <h2 class="mb-0">{{ completedAppointments|length }}</h2>
+                        <p class="mb-0">Ce mois</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card card bg-warning text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">En attente</h5>
+                        <h2 class="mb-0">{{ pendingAppointments|length }}</h2>
+                        <p class="mb-0">À confirmer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {# Today's Appointments #}
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h3 class="h5 mb-0">Rendez-vous du jour</h3>
+                    </div>
+                    <div class="card-body appointment-list">
+                        {% if todayAppointments|length > 0 %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Heure</th>
+                                            <th>Patient</th>
+                                            <th>Service</th>
+                                            <th>Statut</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for appointment in todayAppointments %}
+                                            <tr>
+                                                <td>{{ appointment.dateTime|date('H:i') }}</td>
+                                                <td>{{ appointment.patient.fullName }}</td>
+                                                <td>{{ appointment.service.name }}</td>
+                                                <td>
+                                                    <span class="status-indicator status-{{ appointment.status }}"></span>
+                                                    {{ appointment.status|capitalize }}
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button type="button" class="btn btn-outline-primary"
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#detailsModal{{ appointment.id }}">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        {% if appointment.status == 'scheduled' %}
+                                                            <button type="button" class="btn btn-outline-success"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#completeModal{{ appointment.id }}">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            {# Details Modal #}
+                                            <div class="modal fade" id="detailsModal{{ appointment.id }}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Détails du rendez-vous</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <dl class="row">
+                                                                <dt class="col-sm-4">Patient</dt>
+                                                                <dd class="col-sm-8">{{ appointment.patient.fullName }}</dd>
+                                                                
+                                                                <dt class="col-sm-4">Email</dt>
+                                                                <dd class="col-sm-8">{{ appointment.patient.email }}</dd>
+                                                                
+                                                                <dt class="col-sm-4">Téléphone</dt>
+                                                                <dd class="col-sm-8">{{ appointment.patient.phoneNumber }}</dd>
+                                                                
+                                                                <dt class="col-sm-4">Service</dt>
+                                                                <dd class="col-sm-8">{{ appointment.service.name }}</dd>
+                                                                
+                                                                <dt class="col-sm-4">Date & Heure</dt>
+                                                                <dd class="col-sm-8">{{ appointment.dateTime|date('d/m/Y H:i') }}</dd>
+                                                                
+                                                                <dt class="col-sm-4">Raison</dt>
+                                                                <dd class="col-sm-8">{{ appointment.reason ?: 'Non spécifié' }}</dd>
+                                                                
+                                                                <dt class="col-sm-4">Notes</dt>
+                                                                <dd class="col-sm-8">{{ appointment.notes ?: 'Aucune note' }}</dd>
+                                                            </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {# Complete Modal #}
+                                            <div class="modal fade" id="completeModal{{ appointment.id }}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Terminer le rendez-vous</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="{{ path('app_appointment_complete', {'id': appointment.id}) }}" method="post">
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label for="notes" class="form-label">Notes médicales</label>
+                                                                    <textarea class="form-control" id="notes" name="notes" rows="4"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                                <button type="submit" class="btn btn-success">Terminer</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-calendar-check text-muted mb-3" style="font-size: 2rem;"></i>
+                                <p class="mb-0">Aucun rendez-vous aujourd'hui</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {# Schedule Management #}
+            <div class="col-md-4">
+                <div class="calendar-container">
+                    <h3 class="h5 mb-4">Mon planning</h3>
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Schedule Modal #}
+    <div class="modal fade" id="scheduleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gérer mes disponibilités</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ path('app_doctor_schedule_update') }}" method="post">
+                    <div class="modal-body">
+                        <div class="row">
+                            {% for day in ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] %}
+                                <div class="col-md-6 mb-3">
+                                    <h6>{{ day }}</h6>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="form-label small">Début</label>
+                                            <input type="time" name="schedule[{{ day|lower }}][start]" 
+                                                   class="form-control form-control-sm"
+                                                   value="{{ schedule[day|lower].start|default('09:00') }}">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small">Fin</label>
+                                            <input type="time" name="schedule[{{ day|lower }}][end]" 
+                                                   class="form-control form-control-sm"
+                                                   value="{{ schedule[day|lower].end|default('18:00') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize calendar (you can use FullCalendar.js or similar library here)
+            // This is just a placeholder for the actual calendar implementation
+            console.log('Calendar initialization would go here');
+        });
+    </script>
+{% endblock %}
