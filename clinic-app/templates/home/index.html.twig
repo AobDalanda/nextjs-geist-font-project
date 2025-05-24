@@ -1,0 +1,215 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - {{ parent() }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.pexels.com/photos/247786/pexels-photo-247786.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-top: -1.5rem;
+            margin-bottom: 3rem;
+        }
+        .service-card {
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        .doctor-card {
+            transition: transform 0.3s ease;
+        }
+        .doctor-card:hover {
+            transform: translateY(-5px);
+        }
+        .feature-icon {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+        .cta-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+            margin: 3rem 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {# Hero Section #}
+    <section class="hero text-center">
+        <div class="container">
+            <h1 class="display-4 mb-4">Votre santé, notre priorité</h1>
+            <p class="lead mb-5">Des soins de qualité avec des professionnels qualifiés</p>
+            {% if not app.user %}
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>S'inscrire
+                    </a>
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                    </a>
+                </div>
+            {% else %}
+                <a href="{{ path('app_appointment_new') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-calendar-plus me-2"></i>Prendre rendez-vous
+                </a>
+            {% endif %}
+        </div>
+    </section>
+
+    {# Features Section #}
+    <section class="container mb-5">
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="p-4">
+                    <i class="fas fa-user-md feature-icon"></i>
+                    <h3>Experts qualifiés</h3>
+                    <p class="text-muted">Une équipe de professionnels de santé expérimentés à votre service.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-4">
+                    <i class="fas fa-clock feature-icon"></i>
+                    <h3>Horaires flexibles</h3>
+                    <p class="text-muted">Des créneaux adaptés à votre emploi du temps.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="p-4">
+                    <i class="fas fa-heart feature-icon"></i>
+                    <h3>Soins personnalisés</h3>
+                    <p class="text-muted">Une approche sur mesure pour chaque patient.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Services Section #}
+    <section class="container mb-5">
+        <h2 class="text-center mb-4">Nos services</h2>
+        <div class="row g-4">
+            {% for service in services %}
+                <div class="col-md-4">
+                    <div class="card service-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ service.name }}</h5>
+                            <p class="card-text text-muted">{{ service.description|slice(0, 100) }}...</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-2"></i>{{ service.durationInHours }}
+                                </small>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            {% if app.user %}
+                                <a href="{{ path('app_appointment_new', {'service': service.id}) }}" class="btn btn-outline-primary">
+                                    Prendre rendez-vous
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="btn btn-outline-primary">
+                                    Se connecter pour réserver
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_services') }}" class="btn btn-outline-primary">
+                Voir tous nos services
+            </a>
+        </div>
+    </section>
+
+    {# Doctors Section #}
+    <section class="container mb-5">
+        <h2 class="text-center mb-4">Notre équipe médicale</h2>
+        <div class="row g-4">
+            {% for doctor in doctors %}
+                <div class="col-md-3">
+                    <div class="card doctor-card h-100">
+                        <img src="https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
+                             class="card-img-top" alt="{{ doctor.fullName }}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Dr. {{ doctor.fullName }}</h5>
+                            <p class="card-text text-muted">{{ doctor.speciality }}</p>
+                            {% if app.user %}
+                                <a href="{{ path('app_appointment_new', {'doctor': doctor.id}) }}" class="btn btn-outline-primary btn-sm">
+                                    Prendre rendez-vous
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_doctors') }}" class="btn btn-outline-primary">
+                Voir toute l'équipe
+            </a>
+        </div>
+    </section>
+
+    {# CTA Section #}
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2 class="mb-4">Besoin d'un rendez-vous rapidement ?</h2>
+            <p class="lead mb-4">Notre équipe est à votre disposition pour vous accueillir dans les meilleurs délais.</p>
+            {% if app.user %}
+                <a href="{{ path('app_appointment_new') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-calendar-plus me-2"></i>Prendre rendez-vous maintenant
+                </a>
+            {% else %}
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>S'inscrire
+                    </a>
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    {# Contact Info Section #}
+    <section class="container mb-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-map-marker-alt feature-icon"></i>
+                        <h5 class="card-title">Adresse</h5>
+                        <p class="card-text">123 Rue de la Santé<br>75000 Paris</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-phone feature-icon"></i>
+                        <h5 class="card-title">Téléphone</h5>
+                        <p class="card-text">01 23 45 67 89</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock feature-icon"></i>
+                        <h5 class="card-title">Horaires</h5>
+                        <p class="card-text">Lun - Ven: 8h - 20h<br>Sam: 9h - 18h</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
